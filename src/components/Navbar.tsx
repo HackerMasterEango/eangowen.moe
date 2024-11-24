@@ -1,6 +1,6 @@
 'use client'
 import { motion, useAnimationControls } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Book } from 'lucide-react'
+import { Book } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 

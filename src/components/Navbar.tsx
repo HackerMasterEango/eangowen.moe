@@ -1,8 +1,9 @@
 'use client'
 import { motion, useAnimationControls } from 'framer-motion'
-import { Book } from 'lucide-react'
+import { Book, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { GachaNavMenu } from './GachaNavMenu/GachaNavMenu'
 
 const containerVariants = {
   close: {
@@ -32,6 +33,7 @@ const svgVariants = {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpenDelay, setIsOpenDelay] = useState<boolean>(false)
 
   // animation controls
   const containerControls = useAnimationControls()
@@ -41,6 +43,11 @@ const Navbar = () => {
     setIsOpen(!isOpen)
     containerControls.start(isOpen ? 'close' : 'open')
     svgControls.start(isOpen ? 'close' : 'open')
+
+    // need delay version of isOpen for ui to be smooth
+    setTimeout(() => {
+      setIsOpenDelay(!isOpenDelay)
+    }, 300)
   }
 
   return (
@@ -48,7 +55,7 @@ const Navbar = () => {
       variants={containerVariants}
       animate={containerControls}
       initial="close"
-      className="bg-dark-800 flex flex-col z-20 p-5 gap-20 h-full shadow shadow-neutral-600"
+      className="bg-dark-800 flex flex-col z-20 p-5 gap-20 shadow shadow-neutral-600 h-screen"
     >
       <div className="flex w-full justify-between place-items-center">
         {/* 
@@ -80,9 +87,18 @@ const Navbar = () => {
         </button>
       </div>
 
+      <div className="overflow-clip">
+        <GachaNavMenu>
+          <button className="flex items-center gap-2 overflow-hidden hover:bg-primary-600/30 py-3 cursor-pointer rounded">
+            <Gamepad2 className="stroke-primary-500 min-w-8 w-8" />
+            {(isOpen || isOpenDelay) && <span>Games</span>}
+          </button>
+        </GachaNavMenu>
+      </div>
+
       <div className="flex flex-col gap-5">
         <NavbarLinkItem name="Guides">
-          <Book className="stroke-orange-500 min-w-8 w-8" />
+          <Book className="stroke-primary-500 min-w-8 w-8" />
         </NavbarLinkItem>
       </div>
     </motion.nav>

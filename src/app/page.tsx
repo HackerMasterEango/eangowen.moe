@@ -60,7 +60,7 @@ const gameCards: GameCard[] = [
   {
     id: 3,
     title: 'Revue Starlight ReLIVE',
-    img: '/hsr-main.webp',
+    img: '/revue-main.jpg',
     href: '/revue-starlight-relive',
     tags: ['gay', 'yuri', 'trans', 'lesbian', 'feminist']
   }

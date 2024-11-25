@@ -14,13 +14,15 @@ type GachaCardProps = {
   imgURL?: string
   author?: string
 }
-
 export function GachaCard({ title, description, imgURL, type, author }: GachaCardProps) {
   return (
     <Link href="/gacha">
-      <Card className="overflow-hidden text-neutral-100 transition-all ease-in duration-100 hover:translate-y-1 hover:shadow-lg hover:shadow-neutral-600 bg-dark-800 border-none">
+      <Card
+        className="overflow-hidden text-neutral-100 transition-all
+      ease-in duration-100 hover:translate-y-1 hover:shadow-lg hover:shadow-neutral-600 bg-dark-800 border-none"
+      >
         {/* TODO: have the sizes as props */}
-        <CardContent className="p-0 w-[500px]  h-[150px]">
+        <CardContent className="p-0 w-[500px] h-[150px]">
           <div className="flex">
             {imgURL && (
               <div className="relative h-[150px] w-[150px]">
@@ -28,7 +30,7 @@ export function GachaCard({ title, description, imgURL, type, author }: GachaCar
               </div>
             )}
 
-            <div className="flex justify-between w-full ">
+            <div className="flex justify-between w-full">
               <div className="flex flex-col justify-between p-4">
                 <div>
                   <h3 className="text-lg font-semibold mb-2">{title}</h3>
@@ -44,7 +46,7 @@ export function GachaCard({ title, description, imgURL, type, author }: GachaCar
               </div>
 
               <div className=" self-center mr-4">
-                <ChevronRight className="w-8 h-8 stroke-neutral-100" />s sdf
+                <ChevronRight className="w-8 h-8 stroke-neutral-100" />
               </div>
             </div>
           </div>

@@ -2,6 +2,10 @@ import { supabaseBrowserClient } from '@/lib/supabase/browserClient'
 import { UserResponse } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 
+// NOTE: i made this hook to fetch the authenticated supabase user
+// client side. Don't think this will be needed but it's here anyways
+// i suppose lol its useful for reference on supbase events ig
+
 export function useAuthUser() {
   const [user, setUser] = useState<UserResponse | null>(null)
 

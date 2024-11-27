@@ -5,7 +5,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// write code for me u bitch
 function Page() {
   return (
     <ScrollArea className="h-screen w-full">
@@ -26,8 +25,9 @@ function Page() {
                 />
                 <div className="p-4">
                   <h3 className="mb-4 text-xl font-semibold text-neutral-100">Character Tier List - Version 3.7</h3>
-                  <Button className="text-neutral-100">
-                    <Link href="#">View Full Tier List</Link>
+
+                  <Button className="text-neutral-100" asChild>
+                    <Link href="/girls-frontline-exilium/tier-list">View Full Tier List</Link>
                   </Button>
                 </div>
               </CardContent>

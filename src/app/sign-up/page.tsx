@@ -12,6 +12,10 @@ export default function Page() {
           <Input id="email" name="email" type="email" placeholder="m@example.com" required />
         </div>
         <div className="grid gap-2">
+          <Label htmlFor="username">Username</Label>
+          <Input id="username" name="username" type="username" required />
+        </div>
+        <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
           </div>

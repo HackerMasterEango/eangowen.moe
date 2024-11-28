@@ -14,26 +14,26 @@ export const loginUser = async (previousState: unknown, formData: FormData) => {
   let email = identifier
   if (!identifier.includes('@')) {
     // If identifier is not an email, treat it as a username
-    const { data, error } = await supabase
+    const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('email')
       .eq('username', identifier)
       .single();
 
-    if (error || !data) {
+    if (profileError || !profileData) {
       success = false;
       return { success, fieldData: { identifier, password } };
     }
 
-    email = data.email; // Retrieve the associated email for the username
+    email = profileData.email; // Retrieve the associated email for the username
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error: authError } = await supabase.auth.signInWithPassword({
     email,
     password
   })
 
-  if (error) {
+  if (authError) {
     success = false
   }
 
@@ -42,28 +42,28 @@ export const loginUser = async (previousState: unknown, formData: FormData) => {
   return { success, fieldData: { email, password } }
 }
 
+//Expects email, username, and password in FormData
 export const signUp = async (formData: FormData) => {
   const supabase = await supabaseServerClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
-  const data = {
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email: formData.get('email') as string,
-    password: formData.get('password') as string
-  }
-
-  const { data: authData, error: authError } = await supabase.auth.signUp(data)
+    password: formData.get('password') as string,
+  })
 
   if (authError) {
     redirect('/error')
   }
 
+  //Might want to make this an atomic query
   const { error: profileError } = await supabase
         .from('profiles')
         .insert([
           {
-            user_id: authData!!.user!!.id, // Extract the user ID from auth table update
-            username: formData.get('username') ? (formData.get('username') as string) : undefined //Think this makes it optional idk lel
+            id: authData!.user!.id, // Extract the user ID from auth table update. Enforce non-null
+            username: formData.get('username') ? (formData.get('username') as string) : undefined //Nullable defined in schema
           }
         ])
 

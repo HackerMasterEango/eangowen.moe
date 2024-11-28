@@ -41,7 +41,7 @@ const TierList = <C extends string, T extends string>({ categories, tiers }: Tie
         }}
       >
         {/* Sticky Header */}
-        <div className="sticky top-0 z-10 row-start-1 col-span-full">
+        <div className="sticky top-16 z-10 row-start-1 col-span-full">
           <div
             className={`grid gap-2 items-center`}
             style={{

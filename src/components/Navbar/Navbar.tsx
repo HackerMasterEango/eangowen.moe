@@ -1,26 +1,10 @@
 'use client'
-import { AnimatePresence, motion, useAnimationControls } from 'framer-motion'
-import { Book, Gamepad2 } from 'lucide-react'
+import { AnimationControls, motion } from 'framer-motion'
+import { Book } from 'lucide-react'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import { GachaNavMenu } from './GachaNavMenu/GachaNavMenu'
-
-const containerVariants = {
-  close: {
-    width: '5rem',
-    transition: {
-      type: 'spring',
-      damping: 15
-    }
-  },
-  open: {
-    width: '14rem',
-    transition: {
-      type: 'spring',
-      damping: 15
-    }
-  }
-}
+import React from 'react'
+import Image from 'next/image'
+import { TRAY_ANIMATION_WRAPPER_VARIANTS } from './NavigationWrapper'
 
 const svgVariants = {
   close: {
@@ -31,28 +15,16 @@ const svgVariants = {
   }
 }
 
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [isOpenDelay, setIsOpenDelay] = useState<boolean>(false)
-
-  // animation controls
-  const containerControls = useAnimationControls()
-  const svgControls = useAnimationControls()
-
-  const handleOpenClose = () => {
-    setIsOpen(!isOpen)
-    containerControls.start(isOpen ? 'close' : 'open')
-    svgControls.start(isOpen ? 'close' : 'open')
-
-    // need delay version of isOpen for ui to be smooth
-    setTimeout(() => {
-      setIsOpenDelay(!isOpenDelay)
-    }, 300)
-  }
-
+type NavbarProps = {
+  isOpen: boolean
+  containerControls: AnimationControls
+  svgControls: AnimationControls
+  handleOpenClose: () => void
+}
+const Navbar = ({ isOpen, containerControls, svgControls, handleOpenClose }: NavbarProps) => {
   return (
     <motion.nav
-      variants={containerVariants}
+      variants={TRAY_ANIMATION_WRAPPER_VARIANTS}
       animate={containerControls}
       data-expanded={isOpen}
       initial="close"
@@ -62,7 +34,14 @@ const Navbar = () => {
         <div className="flex justify-between place-items-center px-5 w-full">
           {/* 
         TODO: whatever page user is on change the mascot to relevant anime hoe */}
-          <div className="w-10 h-10 bg-primary-500 rounded-full " />
+          {/* <div className="w-10 h-10 bg-primary-500 rounded-full " /> */}
+          <Image
+            src="/heaven-burns-red/app_logo_400x400.jpg"
+            className="w-10 h-10 rounded-full overflow-hidden"
+            alt="hero"
+            width={40}
+            height={40}
+          />
 
           <button className="p-1" onClick={handleOpenClose}>
             <svg

@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar'
+import { NavigationWrapper } from '@/components/Navbar/NavigationWrapper'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function RootLayout({
@@ -8,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="flex overflow-hidden">
-      <Navbar />
+      <NavigationWrapper />
       <ScrollArea className="h-screen flex-1">{children}</ScrollArea>
     </div>
   )

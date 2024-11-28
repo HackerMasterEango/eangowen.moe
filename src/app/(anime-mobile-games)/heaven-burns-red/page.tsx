@@ -1,7 +1,6 @@
 import { GachaCard } from '@/components/GachaCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -28,7 +27,7 @@ function Page() {
                 <h3 className="mb-4 text-xl font-semibold text-neutral-100">Character Tier List - Version 3.7</h3>
 
                 <Button className="text-neutral-100" asChild>
-                  <Link href="/girls-frontline-exilium/tier-list">View Full Tier List</Link>
+                  <Link href="/heaven-burns-red/tier-list">View Full Tier List</Link>
                 </Button>
               </div>
             </CardContent>

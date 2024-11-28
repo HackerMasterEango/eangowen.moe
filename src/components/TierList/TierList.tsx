@@ -2,15 +2,24 @@ import Image from 'next/image'
 import React from 'react'
 
 const TierList = ({ numCols = 2 }) => {
-  const gridTemplate = `auto${'_1fr'.repeat(numCols)}`
-
   return (
     <div className="w-full">
       {/* TODO:      */}
-      <div className={`grid grid-cols-[${gridTemplate}] gap-2`}>
+      <div
+        // copy above into inline style
+        className="grid  gap-2 "
+        style={{
+          gridTemplateColumns: `auto ${' 1fr'.repeat(numCols)}`
+        }}
+      >
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 row-start-1 col-span-full">
-          <div className={`grid grid-cols-[${gridTemplate}] gap-2 items-center`}>
+          <div
+            className={`grid gap-2 items-center`}
+            style={{
+              gridTemplateColumns: `auto ${' 1fr'.repeat(numCols)}`
+            }}
+          >
             <div className="w-12" />
             <Columns />
           </div>
@@ -55,8 +64,18 @@ const TierList = ({ numCols = 2 }) => {
 
 const Columns = ({ numCols = 2 }) => {
   return (
-    <div className={`col-span-${numCols} bg-dark-700 p-4 rounded-lg`}>
-      <div className={`grid grid-cols-${numCols} gap-2`}>
+    <div
+      className={` bg-dark-700 p-4 rounded-lg`}
+      style={{
+        gridColumn: `span ${numCols} / span ${numCols}`
+      }}
+    >
+      <div
+        className={`grid  gap-2 grid-cols-2`}
+        style={{
+          gridTemplateColumns: `repeat(${numCols}, minmax(0, 1fr))`
+        }}
+      >
         <div className="bg-red-500 rounded-full text-center">DPS</div>
         <div className="bg-blue-500 rounded-full text-center">Healer</div>
       </div>

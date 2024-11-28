@@ -3,6 +3,30 @@ import { supabaseServerClient } from '@/lib/supabase/serverClient'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+const resolveEmailFromIdentifier = async (identifier: string) => {
+  //const supabase = await supabaseServerClient()
+  // Default to treating the identifier as an email
+  if (identifier.includes('@')) {
+    return { email: identifier, error: null };
+  }
+  /* TODO: Implement solution from this:
+  https://stackoverflow.com/questions/78550922/how-do-i-authorise-users-with-username-in-supabase
+  // Treat the identifier as a username and fetch the associated email
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', identifier)
+    .single();
+
+  if (profileError || !profileData) {
+    return { email: null, error: profileError || new Error('Username not found') };
+  }
+
+  return { email: profileData.email, error: null };*/
+  
+  return { email: identifier, error: null };
+};
+
 export const loginUser = async (_: unknown, formData: FormData) => {
   const supabase = await supabaseServerClient()
 
@@ -11,37 +35,8 @@ export const loginUser = async (_: unknown, formData: FormData) => {
 
   let success = true
 
-  const email = userIdentifier
+  const email = (await resolveEmailFromIdentifier(userIdentifier)).email as string
   //let email = userIdentifier
-  if (!userIdentifier.includes('@')) {
-    /* TODO: Add username authentication
-    // If identifier is not an email, treat it as a username
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', userIdentifier)
-      .single();
-
-    if (profileError || !profileData) {
-      success = false;
-      console.log("Profile Error: ", profileError)
-      return { success, fieldData: { userIdentifier, password } };
-    }
-
-    console.log("Id: ", profileData.id)
-
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !userData) {
-      success = false;
-      console.log("User Error: ", userError)
-      return { success, fieldData: { userIdentifier, password } };
-    }
-
-    email = userData.user.email as string // Retrieve the associated email for the username
-    console.log("Email: ", email)
-    */
-  }
 
   const { error: authError } = await supabase.auth.signInWithPassword({
     email,
@@ -79,7 +74,7 @@ export const signUp = async (formData: FormData) => {
         .insert([
           {
             id: authData!.user!.id, // Extract the user ID from auth table update. Enforce non-null
-            username: formData.get('username') ? (formData.get('username') as string) : undefined //Nullable defined in schema
+            username: formData.get('username') as string //Nullable defined in schema
           }
         ])
 

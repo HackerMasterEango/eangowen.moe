@@ -2,9 +2,11 @@
 import { AnimationControls, motion } from 'framer-motion'
 import { Book } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useMemo } from 'react'
 import Image from 'next/image'
 import { TRAY_ANIMATION_WRAPPER_VARIANTS } from './NavigationWrapper'
+import { usePathname } from 'next/navigation'
+import { NAV_BAR_ITEMS } from './navBarItems'
 
 const svgVariants = {
   close: {
@@ -22,6 +24,14 @@ type NavbarProps = {
   handleOpenClose: () => void
 }
 const Navbar = ({ isOpen, containerControls, svgControls, handleOpenClose }: NavbarProps) => {
+  const pathname = usePathname()
+
+  const navItems = useMemo(() => {
+    const currentPath = pathname.split('/')[1]
+
+    return NAV_BAR_ITEMS[currentPath] ?? []
+  }, [pathname])
+
   return (
     <motion.nav
       variants={TRAY_ANIMATION_WRAPPER_VARIANTS}
@@ -69,19 +79,12 @@ const Navbar = ({ isOpen, containerControls, svgControls, handleOpenClose }: Nav
         </div>
       </div>
 
-      {/* <div className="overflow-clip">
-        <GachaNavMenu>
-          <button className="flex items-center gap-2 overflow-hidden hover:bg-primary-600/30 py-3 cursor-pointer rounded">
-            <Gamepad2 className="stroke-primary-500 min-w-8 w-8" />
-            {(isOpen || isOpenDelay) && <span>Games</span>}
-          </button>
-        </GachaNavMenu>
-      </div> */}
-
       <div className="flex flex-col gap-5 p-5 shadow-[1px_0_0_0_#00c27f15] h-full">
-        <NavbarLinkItem name="Guides">
-          <Book className="stroke-primary-500 min-w-8 w-8" />
-        </NavbarLinkItem>
+        {navItems.map(({ name, icon: Icon }, index) => (
+          <NavbarLinkItem key={index} name={name}>
+            <Icon className="stroke-primary-500 min-w-8 w-8" />
+          </NavbarLinkItem>
+        ))}
       </div>
     </motion.nav>
   )

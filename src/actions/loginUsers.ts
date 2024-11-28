@@ -7,7 +7,7 @@ const resolveEmailFromIdentifier = async (identifier: string) => {
   //const supabase = await supabaseServerClient()
   // Default to treating the identifier as an email
   if (identifier.includes('@')) {
-    return { email: identifier, error: null };
+    return { email: identifier, error: null }
   }
   /* TODO: Implement solution from this:
   https://stackoverflow.com/questions/78550922/how-do-i-authorise-users-with-username-in-supabase
@@ -23,9 +23,9 @@ const resolveEmailFromIdentifier = async (identifier: string) => {
   }
 
   return { email: profileData.email, error: null };*/
-  
-  return { email: identifier, error: null };
-};
+
+  return { email: identifier, error: null }
+}
 
 export const loginUser = async (_: unknown, formData: FormData) => {
   const supabase = await supabaseServerClient()

@@ -6,26 +6,41 @@ import { redirect } from 'next/navigation'
 export const loginUser = async (_: unknown, formData: FormData) => {
   const supabase = await supabaseServerClient()
 
-  const identifier = formData.get('email') as string //should change form name
+  const userIdentifier = formData.get('userIdentifier') as string //should change form name
   const password = formData.get('password') as string
 
   let success = true
 
-  let email = identifier
-  if (!identifier.includes('@')) {
+  const email = userIdentifier
+  //let email = userIdentifier
+  if (!userIdentifier.includes('@')) {
+    /* TODO: Add username authentication
     // If identifier is not an email, treat it as a username
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('email')
-      .eq('username', identifier)
+      .select('id')
+      .eq('username', userIdentifier)
       .single();
 
     if (profileError || !profileData) {
       success = false;
-      return { success, fieldData: { identifier, password } };
+      console.log("Profile Error: ", profileError)
+      return { success, fieldData: { userIdentifier, password } };
     }
 
-    email = profileData.email; // Retrieve the associated email for the username
+    console.log("Id: ", profileData.id)
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData) {
+      success = false;
+      console.log("User Error: ", userError)
+      return { success, fieldData: { userIdentifier, password } };
+    }
+
+    email = userData.user.email as string // Retrieve the associated email for the username
+    console.log("Email: ", email)
+    */
   }
 
   const { error: authError } = await supabase.auth.signInWithPassword({

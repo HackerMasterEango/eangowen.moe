@@ -1,6 +1,5 @@
 'use client'
 import { AnimationControls, motion } from 'framer-motion'
-import { Book } from 'lucide-react'
 import Link from 'next/link'
 import React, { useMemo } from 'react'
 import Image from 'next/image'

@@ -26,7 +26,13 @@ export function GachaCard({ title, description, imgURL, type, author }: GachaCar
           <div className="flex">
             {imgURL && (
               <div className="relative h-[150px] w-[150px]">
-                <Image src={imgURL} alt={title} fill className="object-cover" />
+                <Image
+                  src={imgURL}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  // TODO: need sizes prop
+                />
               </div>
             )}
 

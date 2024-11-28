@@ -29,8 +29,9 @@ export const Header = ({ isLoggedIn }: HeaderProps) => {
   }, [loginFormOpen])
 
   return (
-    <>
-      <div className="fixed top-4 right-4 z-20">
+    <div className="fixed top-0 right-0 left-0 h-16 bg-dark-900 border-b border-primary-500/10 z-10 flex items-center justify-between px-4">
+      <div />
+      <div className=" top-4 right-4 ">
         {isLoggedIn ? (
           <Button onClick={logOut}>logged in</Button>
         ) : (
@@ -41,6 +42,6 @@ export const Header = ({ isLoggedIn }: HeaderProps) => {
       <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
         {loginFormOpen && <LoginForm ref={modalRef} onClose={() => setLogInFormIsOpen(false)} />}
       </AnimatePresence>
-    </>
+    </div>
   )
 }

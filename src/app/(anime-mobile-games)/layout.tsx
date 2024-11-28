@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function RootLayout({
   children
@@ -6,10 +7,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex h-full">
+    <div className="flex overflow-hidden">
       <Navbar />
-
-      {children}
+      <ScrollArea className="h-screen flex-1">{children}</ScrollArea>
     </div>
   )
 }

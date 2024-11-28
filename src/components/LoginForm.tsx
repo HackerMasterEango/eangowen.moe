@@ -69,13 +69,12 @@ export function LoginForm({ onClose, ref }: LoginFormProps) {
         <CardContent>
           <form className="grid gap-4" action={action}>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="userIdentifier">Username/Email</Label>
               <Input
-                defaultValue={data?.fieldData.email}
-                id="email"
-                name="email"
-                type="email"
-                placeholder="m@example.com"
+                id="userIdentifier"
+                name="userIdentifier"
+                type="text"
+                placeholder=""
                 required
               />
             </div>

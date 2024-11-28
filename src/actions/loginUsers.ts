@@ -44,6 +44,7 @@ export const signUp = async (formData: FormData) => {
 }
 
 export const logOut = async () => {
+  console.log('logging out')
   const supabase = await supabaseServerClient()
 
   const { error } = await supabase.auth.signOut()

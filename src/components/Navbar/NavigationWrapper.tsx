@@ -23,7 +23,10 @@ export const TRAY_ANIMATION_WRAPPER_VARIANTS = {
   }
 }
 
-export const NavigationWrapper = () => {
+type NavigationWrapperProps = {
+  isLoggedIn: boolean
+}
+export const NavigationWrapper = ({ isLoggedIn }: NavigationWrapperProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const containerControls = useAnimationControls()
   const svgControls = useAnimationControls()
@@ -42,7 +45,7 @@ export const NavigationWrapper = () => {
         svgControls={svgControls}
         handleOpenClose={handleOpenClose}
       />
-      <Header isLoggedIn={true} containerControls={containerControls} />
+      <Header isLoggedIn={isLoggedIn} containerControls={containerControls} />
     </>
   )
 }

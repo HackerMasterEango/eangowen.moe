@@ -36,7 +36,6 @@ export const loginUser = async (_: unknown, formData: FormData) => {
   let success = true
 
   const email = (await resolveEmailFromIdentifier(userIdentifier)).email as string
-  //let email = userIdentifier
 
   const { error: authError } = await supabase.auth.signInWithPassword({
     email,
@@ -58,7 +57,7 @@ export const signUp = async (formData: FormData) => {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { error: authError } = await supabase.auth.signUp({
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   })
@@ -68,6 +67,7 @@ export const signUp = async (formData: FormData) => {
     redirect('/error')
   }
 
+  /* username is now updated by trigger
   //Might want to make this an atomic query
   const { error: profileError } = await supabase
         .from('profiles')
@@ -82,7 +82,7 @@ if (profileError) {
   console.log("Profile Error: ", profileError)
   redirect('/error')
 }
-
+*/
   revalidatePath('/', 'layout')
   redirect('/')
 }

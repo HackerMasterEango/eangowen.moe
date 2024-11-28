@@ -3,7 +3,7 @@ import { supabaseServerClient } from '@/lib/supabase/serverClient'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-export const loginUser = async (previousState: unknown, formData: FormData) => {
+export const loginUser = async (_: unknown, formData: FormData) => {
   const supabase = await supabaseServerClient()
 
   const identifier = formData.get('email') as string //should change form name
@@ -45,8 +45,6 @@ export const loginUser = async (previousState: unknown, formData: FormData) => {
 export const signUp = async (formData: FormData) => {
   const supabase = await supabaseServerClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string

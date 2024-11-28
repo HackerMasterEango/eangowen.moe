@@ -54,6 +54,16 @@ const Navbar = () => {
     <motion.nav
       variants={containerVariants}
       animate={containerControls}
+      onMouseEnter={() => {
+        setIsOpenDelay(true)
+        setIsOpen(true)
+        containerControls.start('open')
+      }}
+      onMouseLeave={() => {
+        setIsOpenDelay(false)
+        setIsOpen(false)
+        containerControls.start('close')
+      }}
       initial="close"
       className="bg-dark-800 flex flex-col z-20 p-5 gap-20 shadow shadow-neutral-600 h-screen"
     >

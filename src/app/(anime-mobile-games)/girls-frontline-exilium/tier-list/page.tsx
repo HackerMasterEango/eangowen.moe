@@ -29,37 +29,59 @@ function Page() {
           ]}
           tiers={[
             {
+              tierName: 'S',
+              colorClass: 'bg-red-500',
+              placements: {
+                // all empty
+                Blaster: [],
+                Tank: [],
+                Support: [],
+                Healer: []
+              }
+            },
+
+            {
               tierName: 'B',
               colorClass: 'bg-blue-500',
               placements: {
                 Blaster: [
                   {
                     id: '1',
-                    imgUrl: 'Character 1'
+                    imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                   },
                   {
                     id: '2',
-                    imgUrl: 'Character 1'
+                    imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                   }
                 ],
                 Tank: [
                   {
                     id: '1',
-                    imgUrl: 'Character 1'
+                    imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                   }
                 ],
                 Support: [
                   {
                     id: '1',
-                    imgUrl: 'Character 1'
+                    imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                   }
                 ],
-                Healer: [
+                Healer: []
+              }
+            },
+            {
+              tierName: 'C',
+              colorClass: 'bg-green-500',
+              placements: {
+                Blaster: [],
+                Tank: [
                   {
                     id: '1',
-                    imgUrl: 'Character 1'
+                    imgUrl: '/heaven-burns-red/units/Megumi_A_100.webp'
                   }
-                ]
+                ],
+                Support: [],
+                Healer: []
               }
             }
           ]}

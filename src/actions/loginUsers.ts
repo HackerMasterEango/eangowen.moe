@@ -54,6 +54,7 @@ export const signUp = async (formData: FormData) => {
   })
 
   if (authError) {
+    console.log("Auth Error: ", authError)
     redirect('/error')
   }
 
@@ -68,6 +69,7 @@ export const signUp = async (formData: FormData) => {
         ])
 
 if (profileError) {
+  console.log("Profile Error: ", profileError)
   redirect('/error')
 }
 

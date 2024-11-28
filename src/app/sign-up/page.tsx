@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 
 export default function Page() {
   return (
-    <div className="flex h-full w-full items-center justify-center px-4">
+    <div className="flex h-full w-full items-center justify-center px-4 mt-32">
       <form className="grid gap-4" action={signUp}>
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>

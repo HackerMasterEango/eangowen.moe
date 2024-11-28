@@ -62,6 +62,26 @@ function Page() {
                 {
                   id: '1',
                   imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
+                },
+                {
+                  id: '2',
+                  imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
+                },
+                {
+                  id: '3',
+                  imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
+                },
+                {
+                  id: '4',
+                  imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
+                },
+                {
+                  id: '5',
+                  imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
+                },
+                {
+                  id: '6',
+                  imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                 }
               ],
               Healer: []

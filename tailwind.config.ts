@@ -46,7 +46,7 @@ export default {
           '600': '#d55a3f',
           DEFAULT: '#d55a3f'
         },
-        primary: {
+        df: {
           '50': '#F6DBD6',
           '100': '#f4b7a5',
           '200': '#f0a590',
@@ -56,7 +56,7 @@ export default {
           '600': '#d55a3f',
           DEFAULT: '#d55a3f'
         },
-        green: {
+        primary: {
           '50': '#e1f8f0',
           '100': '#b5eed8',
           '200': '#80e2c0',

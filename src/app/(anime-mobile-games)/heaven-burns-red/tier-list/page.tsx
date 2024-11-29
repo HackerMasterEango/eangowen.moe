@@ -1,7 +1,10 @@
 import TierList from '@/components/TierList/TierList'
 
-type HeavenBurnRedCategories = 'Blaster' | 'Tank' | 'Support' | 'Healer'
+// copying the categories from here: https://game8.jp/heavenburnsred/425643
+type HeavenBurnRedCategories = 'DPS' | 'Buffs' | 'Debuffs' | 'Support'
 type HeavenBurnRedTiers = 'S' | 'A' | 'B' | 'C' | 'D' | 'E'
+
+export type HeavenBurnRedUnitType = 'Blaster' | 'Tank' | 'Support' | 'Healer'
 
 function Page() {
   return (
@@ -9,20 +12,24 @@ function Page() {
       <TierList<HeavenBurnRedCategories, HeavenBurnRedTiers>
         categories={[
           {
-            name: 'Blaster',
-            colorClass: 'bg-red-500'
+            name: 'DPS',
+            colorClass: 'bg-red-500',
+            borderClass: 'border-red-500'
           },
           {
-            name: 'Tank',
-            colorClass: 'bg-blue-500'
+            name: 'Buffs',
+            colorClass: 'bg-blue-500',
+            borderClass: 'border-blue-500'
+          },
+          {
+            name: 'Debuffs',
+            colorClass: 'bg-green-500',
+            borderClass: 'border-green-500'
           },
           {
             name: 'Support',
-            colorClass: 'bg-green-500'
-          },
-          {
-            name: 'Healer',
-            colorClass: 'bg-yellow-300'
+            colorClass: 'bg-yellow-300',
+            borderClass: 'border-yellow-500'
           }
         ]}
         tiers={[
@@ -31,18 +38,19 @@ function Page() {
             colorClass: 'bg-red-500',
             placements: {
               // all empty
-              Blaster: [],
-              Tank: [],
-              Support: [],
-              Healer: []
-            }
+              DPS: [],
+              Buffs: [],
+              Debuffs: [],
+              Support: []
+            },
+            isEmpty: true
           },
 
           {
             tierName: 'B',
             colorClass: 'bg-blue-500',
             placements: {
-              Blaster: [
+              DPS: [
                 {
                   id: '1',
                   imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
@@ -52,7 +60,7 @@ function Page() {
                   imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                 }
               ],
-              Tank: [
+              Buffs: [
                 {
                   id: '1',
                   imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
@@ -84,22 +92,22 @@ function Page() {
                   imgUrl: '/heaven-burns-red/units/Karen_SS_100.webp'
                 }
               ],
-              Healer: []
+              Debuffs: []
             }
           },
           {
             tierName: 'C',
             colorClass: 'bg-green-500',
             placements: {
-              Blaster: [],
-              Tank: [
+              Debuffs: [],
+              Buffs: [
                 {
                   id: '1',
                   imgUrl: '/heaven-burns-red/units/Megumi_A_100.webp'
                 }
               ],
               Support: [],
-              Healer: []
+              DPS: []
             }
           }
         ]}

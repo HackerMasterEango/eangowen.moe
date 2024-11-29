@@ -5,6 +5,7 @@ import React from 'react'
 type TierListCategory<T extends string> = {
   name: T
   colorClass: string
+  borderClass: string
 }
 
 // actual character image placed on tier list.
@@ -23,6 +24,7 @@ type Tier<C extends string, T extends string> = {
   tierName: T
   colorClass: string
   placements: Placements<C>
+  isEmpty?: boolean
 }
 
 type TierListProps<CategoryType extends string, TierNameType extends string> = {
@@ -35,7 +37,7 @@ const TierList = <C extends string, T extends string>({ categories, tiers }: Tie
   return (
     <div className="w-full">
       <div
-        className="grid gap-2 tier-list-template-columns"
+        className="grid md:gap-2 tier-list-template-columns"
         style={{ '--num-cols': numCols } as React.CSSProperties}
       >
         {/* Sticky Header */}
@@ -92,42 +94,64 @@ type RowProps<C extends string, T extends string> = {
 const Row = <C extends string, T extends string>({ tier, categories }: RowProps<C, T>) => {
   return (
     <>
-    {/* Tier Name */}
-    <div 
-      className={cn(
-        'w-12 flex items-center justify-center min-h-12',
-        'md:h-full',
-        'max-md:w-full max-md:p-2 max-md:text-center', // Mobile: full width
-        tier.colorClass
-      )}
-    >
-      {tier.tierName}
-    </div>
-
-    {/* Categories */}
-    {categories.map(category => (
-      <div 
-        key={category.name} 
+      {/* Tier Name */}
+      <div
         className={cn(
-          'bg-dark-600 rounded-lg p-4',
-          'md:flex md:gap-2 md:flex-wrap', // Desktop: flex layout
-          'max-md:border-t max-md:border-dark-300', // Mobile: borders
+          'w-12 flex items-center justify-center md:min-h-[134px]',
+          'md:h-full',
+          'max-md:w-full max-md:p-2 max-md:text-center', // Mobile: full width
+          'max-md:my-2 max-md:rounded-lg', // Mobile: margin between tiers
+          tier.colorClass,
+          // on mobile if tier.isEmpty, hide the tier
+          tier.isEmpty ? 'max-md:hidden' : ''
         )}
       >
-        {/* Category name - only show on mobile */}
-        <div className={cn('text-sm mb-2 md:hidden', category.colorClass)}>
-          {category.name}
-        </div>
-
-        {/* Character cards */}
-        <div className="flex gap-2 flex-wrap">
-          {tier.placements[category.name].map(character => (
-            <CharacterCard key={character.id} imgUrl={character.imgUrl} />
-          ))}
-        </div>
+        {tier.tierName}
       </div>
-    ))}
-  </>
+
+      {/* Categories */}
+      {categories.map((category, idx) => (
+        <div
+          key={category.name}
+          className={cn(
+            'bg-dark-600 md:rounded-lg p-4 max-md:py-2',
+            'md:flex md:gap-2 md:flex-wrap', // Desktop: flex layout
+            // Mobile: rounded border radius for first/last visible categories
+            {
+              'max-md:rounded-t-lg':
+                tier.placements[category.name].length > 0 &&
+                idx === categories.findIndex(c => tier.placements[c.name].length > 0),
+              'max-md:rounded-b-lg':
+                tier.placements[category.name].length > 0 &&
+                idx === categories.findLastIndex(c => tier.placements[c.name].length > 0)
+            },
+
+            tier.placements[category.name].length === 0 ? 'max-md:hidden' : ''
+          )}
+        >
+          {/* Category name - only show on mobile */}
+          <div className="md:hidden">
+            <div className={cn('text-sm text-center', category.colorClass)}>
+              <span>{category.name}</span>
+            </div>
+            {/* Divider to extend border..... this is technology! */}
+            <div className={cn('border-x-2 h-2', category.borderClass)} />
+          </div>
+
+          {/* Character cards */}
+          <div
+            className={cn(
+              'flex gap-2 flex-wrap md:border-none border-x-2 border-b-2 px-2 pb-2 rounded-b',
+              category.borderClass
+            )}
+          >
+            {tier.placements[category.name].map(character => (
+              <CharacterCard key={character.id} imgUrl={character.imgUrl} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
   )
 }
 
@@ -136,16 +160,18 @@ type CharacterCardProps = {
 }
 const CharacterCard = ({ imgUrl }: CharacterCardProps) => {
   return (
-    <div className="w-[100px] h-[100px] overflow-hidden rounded-lg cursor-pointer">
-      <Image
-        src={imgUrl}
-        width={100}
-        height={100}
-        alt="Karen A"
-        className="w-[100px] h-[100px]  hover:scale-105 
+    <>
+      <div className="w-[100px] h-[100px] overflow-hidden rounded-lg cursor-pointer">
+        <Image
+          src={imgUrl}
+          width={100}
+          height={100}
+          alt="Karen A"
+          className="w-[100px] h-[100px]  hover:scale-105 
                 transition-transform duration-1000 transform-gpu translate-z-0"
-      />
-    </div>
+        />
+      </div>
+    </>
   )
 }
 

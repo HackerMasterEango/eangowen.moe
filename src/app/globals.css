@@ -11,6 +11,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* // do media query for mobile, that is like max-md:grid-cols-1 */
+.tier-list-template-columns {
+  grid-template-columns: auto repeat(var(--num-cols, 1), 1fr);
+}
+
+@media (max-width: 768px) {
+  .tier-list-template-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 @layer base {
   :root {
     --radius: 0.5rem;

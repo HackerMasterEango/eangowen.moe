@@ -35,18 +35,14 @@ const TierList = <C extends string, T extends string>({ categories, tiers }: Tie
   return (
     <div className="w-full">
       <div
-        className="grid  gap-2 "
-        style={{
-          gridTemplateColumns: `auto ${' 1fr'.repeat(numCols)}`
-        }}
+        className="grid gap-2 tier-list-template-columns"
+        style={{ '--num-cols': numCols } as React.CSSProperties}
       >
         {/* Sticky Header */}
-        <div className="sticky top-16 z-10 row-start-1 col-span-full">
+        <div className="sticky top-16 z-10 row-start-1 col-span-full max-md:hidden">
           <div
-            className={`grid gap-2 items-center`}
-            style={{
-              gridTemplateColumns: `auto ${' 1fr'.repeat(numCols)}`
-            }}
+            className={`grid gap-2 items-center tier-list-template-columns`}
+            style={{ '--num-cols': numCols } as React.CSSProperties}
           >
             <div className="w-12" />
             <Columns<C> categories={categories} numCols={numCols} />
@@ -96,17 +92,42 @@ type RowProps<C extends string, T extends string> = {
 const Row = <C extends string, T extends string>({ tier, categories }: RowProps<C, T>) => {
   return (
     <>
-      <div className={cn('w-12 flex items-center justify-center h-full min-h-[132px]', tier.colorClass)}>
-        {tier.tierName}
-      </div>
-      {categories.map(category => (
-        <div key={category.name} className="flex gap-2 flex-wrap bg-dark-800 rounded-lg p-4">
+    {/* Tier Name */}
+    <div 
+      className={cn(
+        'w-12 flex items-center justify-center min-h-12',
+        'md:h-full',
+        'max-md:w-full max-md:p-2 max-md:text-center', // Mobile: full width
+        tier.colorClass
+      )}
+    >
+      {tier.tierName}
+    </div>
+
+    {/* Categories */}
+    {categories.map(category => (
+      <div 
+        key={category.name} 
+        className={cn(
+          'bg-dark-600 rounded-lg p-4',
+          'md:flex md:gap-2 md:flex-wrap', // Desktop: flex layout
+          'max-md:border-t max-md:border-dark-300', // Mobile: borders
+        )}
+      >
+        {/* Category name - only show on mobile */}
+        <div className={cn('text-sm mb-2 md:hidden', category.colorClass)}>
+          {category.name}
+        </div>
+
+        {/* Character cards */}
+        <div className="flex gap-2 flex-wrap">
           {tier.placements[category.name].map(character => (
             <CharacterCard key={character.id} imgUrl={character.imgUrl} />
           ))}
         </div>
-      ))}
-    </>
+      </div>
+    ))}
+  </>
   )
 }
 

@@ -6,6 +6,7 @@ import { AnimatePresence, AnimationControls } from 'framer-motion'
 import { logOut } from '@/actions/loginUsers'
 import { motion } from 'framer-motion'
 import { TRAY_ANIMATION_WRAPPER_VARIANTS } from '../Navbar/NavigationWrapper'
+import { GachaNavMenu } from '../GachaNavMenu/GachaNavMenu'
 
 type HeaderProps = {
   isLoggedIn: boolean
@@ -36,7 +37,9 @@ export const Header = ({ isLoggedIn, containerControls }: HeaderProps) => {
       <div className="flex items-center h-full">
         <motion.div variants={TRAY_ANIMATION_WRAPPER_VARIANTS} animate={containerControls} initial="close" />
 
-        <div className="flex-1">place navigation here</div>
+        <div className="flex-1">
+          <GachaNavMenu />
+        </div>
 
         <div className="pr-4">
           {isLoggedIn ? (

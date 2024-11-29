@@ -1,9 +1,15 @@
 'use client'
 
-import Link from 'next/link'
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger
+} from '@/components/ui/navigation-menu'
 import Image from 'next/image'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { useRef } from 'react'
+import Link from 'next/link'
 
 interface GachaGame {
   id: string
@@ -18,47 +24,49 @@ const gachaGames: GachaGame[] = [
   { id: 'heaven-burns-red', name: 'Heaven Burns Red', imageUrl: '/hbr-main.jpg' }
 ]
 
-type GachaNavMenuProps = {
-  children: React.ReactNode
-}
-export function GachaNavMenu({ children }: GachaNavMenuProps) {
-  const ref = useRef<HTMLDivElement>(null)
-
+export function GachaNavMenu() {
   return (
-    <HoverCard openDelay={0} closeDelay={200}>
-      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent ref={ref} className="p-0 w-auto" side="right">
-        <nav className="grid grid-cols-3 gap-1 p-2">
-          {gachaGames.map(game => (
-            <GachaNavMenuItem key={game.id} ref={ref} game={game} />
-          ))}
-        </nav>
-      </HoverCardContent>
-    </HoverCard>
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className="bg-dark-800 text-white hover:bg-dark-700">
+            Gacha Games
+          </NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-2 p-2 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-dark-700">
+              {gachaGames.map(game => (
+                <GachaNavCard key={game.id} game={game} />
+              ))}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   )
 }
 
-type GachaNavMenuItemProps = {
-  game: GachaGame
-  ref: React.RefObject<HTMLDivElement>
-}
-const GachaNavMenuItem = ({ game, ref }: GachaNavMenuItemProps) => {
+const GachaNavCard = ({ game }: { game: GachaGame }) => {
   return (
-    <Link
-      key={game.id}
-      href={`/${game.id}`}
-      onClick={() => {
-        // hide content now
-        ref.current?.style.setProperty('display', 'none')
-      }}
-    >
-      <Image
-        src={game.imageUrl}
-        alt={game.name}
-        width={160}
-        height={100}
-        className="w-[160px] h-[100px]  object-cover"
-      />
-    </Link>
+    <li>
+      <NavigationMenuLink asChild>
+        <Link
+          href={`/${game.id}`}
+          className="block space-y-1 rounded-md leading-none no-underline outline-none transition-colors hover:text-white focus:bg-dark-800 focus:text-white"
+        >
+          <div className="relative h-[100px] w-full overflow-hidden rounded-md">
+            <Image
+              src={game.imageUrl}
+              alt={game.name}
+              fill
+              className="object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <div className="absolute bottom-2 left-2 right-2">
+              <h3 className="text-lg font-semibold leading-tight text-white">{game.name}</h3>
+            </div>
+          </div>
+        </Link>
+      </NavigationMenuLink>
+    </li>
   )
 }

@@ -79,8 +79,8 @@ const Navbar = ({ isOpen, containerControls, svgControls, handleOpenClose }: Nav
       </div>
 
       <div className="flex flex-col gap-5 p-5 shadow-[1px_0_0_0_#00c27f15] h-full">
-        {navItems.map(({ name, icon: Icon }, index) => (
-          <NavbarLinkItem key={index} name={name}>
+        {navItems.map(({ name, icon: Icon, href }, index) => (
+          <NavbarLinkItem key={index} name={name} href={href}>
             <Icon className="stroke-primary-500 min-w-8 w-8" />
           </NavbarLinkItem>
         ))}
@@ -92,11 +92,12 @@ const Navbar = ({ isOpen, containerControls, svgControls, handleOpenClose }: Nav
 type NavbarLinkItemProps = {
   name: string
   children: React.ReactNode
+  href: string
 }
-const NavbarLinkItem = ({ name, children }: NavbarLinkItemProps) => {
+const NavbarLinkItem = ({ name, href, children }: NavbarLinkItemProps) => {
   return (
     <Link
-      href="#"
+      href={href}
       className="flex py-3 rounded cursor-pointer hover:stroke-primary-500
          stroke-primary-400 text-neutral-100 hover:text-primary-50 place-items-center
          gap-3 hover:bg-primary-900/20 transition-colors duration-300 ease-in-out"

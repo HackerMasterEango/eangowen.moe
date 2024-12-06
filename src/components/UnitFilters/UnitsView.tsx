@@ -1,22 +1,27 @@
 
 "use client"
-import { useAtom } from "jotai"
 import Image from "next/image"
 import { unitsAtom } from "./filterAtoms"
+import { Unit } from "./Filters"
+import { useHydratedAtom } from "@/hooks/useHydratedAtom"
 
 
 
-
-export const UnitsView = () => {
-
-  const [units] = useAtom(unitsAtom)
+type UnitsViewProps = {
+  initialUnits: Unit[]
+}
+export const UnitsView = ({
+  initialUnits
+}: UnitsViewProps) => { 
+  const [units] = useHydratedAtom<Unit[]>(unitsAtom, initialUnits)
 
   if (!units || units.length === 0) {
     return <div>No units found</div>
   }
-  return (
 
-<div className="flex gap-3 items-center">
+
+  return (
+    <div className="flex gap-3 items-center">
       {units.map(({ id, name, imgUrl }) => (
         <div key={id} className="flex flex-col items-center">
           <CharacterCard  imgUrl={imgUrl} />

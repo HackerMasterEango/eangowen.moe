@@ -1,15 +1,27 @@
 import React from 'react'
-import Filters from './Filters'
+import Filters, { Unit } from './Filters'
 import { UnitsView } from './UnitsView'
-import { HEAVEN_BURNS_RED_UNITS } from '@/db/units'
 
-const UnitFilters = () => {
+
+type UnitFiltersProps = {
+  initialUnits: Unit[]
+  allUnits: Unit[]
+  initialSearch?: string
+}
+const UnitFilters = ({
+  initialUnits,
+  allUnits,
+  initialSearch = ""
+}: UnitFiltersProps) => {
+
+
+
   return (
     <div className="container">
       <div className='mb-4'>
-        <Filters />
+        <Filters initialSearch={initialSearch} allUnits={allUnits} />
       </div>
-    <UnitsView />
+    <UnitsView initialUnits={initialUnits} />
 
     </div>
   )

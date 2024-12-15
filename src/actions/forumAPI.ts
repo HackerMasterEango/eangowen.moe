@@ -34,8 +34,7 @@ type ListPostsReturn = {
 ///////////////////////////////////////
 
 // Function to return a list of posts
-// TODO: Add parameter to filter based on topic
-export async function listPosts(
+export async function listAllPosts(
   supabase: SupabaseClient,
   pageNumber: number = 1, //Default to page 1
   pageSize: number = 20 //Default to 20 entries per request
@@ -43,6 +42,87 @@ export async function listPosts(
     // Query with rpc function
     const {data, error} = await supabase
     .rpc('list_forum_posts_with_aggregate_votes', {
+      page_number: pageNumber,
+      page_size: pageSize
+    })
+
+    if (error || !data) {
+      return {
+        posts: null,
+        error: error
+      }
+    }
+
+    // Map the RPC response into the expected format
+    const rpcPostsList: ListPostsElement[] = data.map((post: RpcListPostsResponse) => ({
+      id: post.id,
+      title: post.post_title || null,
+      rating: post.average_vote || null,
+      timestamp: post.created_at || null,
+    }))
+
+    return {
+      posts: rpcPostsList,
+      error: error
+    }
+}
+
+///////////////////////////////////////
+//Read list of posts by topic function
+///////////////////////////////////////
+
+// Function to return a list of posts
+export async function listPostsByTopic(
+  supabase: SupabaseClient,
+  topicId: string,
+  pageNumber: number = 1, //Default to page 1
+  pageSize: number = 20 //Default to 20 entries per request
+): Promise<ListPostsReturn> {
+    // Query with rpc function
+    const {data, error} = await supabase
+    .rpc('list_forum_posts_by_topic_with_aggregate_votes', {
+      topic_id: topicId,
+      page_number: pageNumber,
+      page_size: pageSize
+    })
+
+    if (error || !data) {
+      return {
+        posts: null,
+        error: error
+      }
+    }
+
+    // Map the RPC response into the expected format
+    const rpcPostsList: ListPostsElement[] = data.map((post: RpcListPostsResponse) => ({
+      id: post.id,
+      title: post.post_title || null,
+      rating: post.average_vote || null,
+      timestamp: post.created_at || null,
+    }))
+
+    return {
+      posts: rpcPostsList,
+      error: error
+    }
+}
+
+
+///////////////////////////////////////
+//Read list of posts by user function
+///////////////////////////////////////
+
+// Function to return a list of posts
+export async function listPostsByUser(
+  supabase: SupabaseClient,
+  userId: string,
+  pageNumber: number = 1, //Default to page 1
+  pageSize: number = 20 //Default to 20 entries per request
+): Promise<ListPostsReturn> {
+    // Query with rpc function
+    const {data, error} = await supabase
+    .rpc('list_forum_posts_by_user_with_aggregate_votes', {
+      user_id: userId,
       page_number: pageNumber,
       page_size: pageSize
     })
@@ -125,6 +205,48 @@ type ReadPostReturn = {
   post: ReadPostElement | null // A single post or null if there's an error
   postError: PostgrestError | null // Indicates whether there was an error from post request
   commentError: PostgrestError | null // Indicates whether there was an error from comments request
+}
+
+///////////////////////////////////////
+//Read a single post comments function
+///////////////////////////////////////
+
+// Function to read a user's comments
+export async function listCommentsByUser(
+  supabase: SupabaseClient,
+  userId: string, //uuid of post
+  commentPageNumber: number = 1, //Page number of comments displayed
+  commentPageSize: number = 20 //Page size of comments displayed
+): Promise<ReadPostCommentsReturn> {
+    // Query comments with rpc function
+    const {data: postComments, error: postCommentsError} = await supabase
+    .rpc('list_forum_comments_by_user_with_aggregate_votes', {
+      user_id: userId,
+      pageNumber: commentPageNumber, //Default to page 1
+      pageSize: commentPageSize //Default to 20 entries per request
+    })
+
+    if (postCommentsError || !postComments) {
+      return {
+        comments: null,
+        error: postCommentsError
+      }
+    }
+
+    // Map the RPC response into the expected format
+    const rpcCommentsList: ReadPostCommentsElement[] = postComments.map((comment: RpcReadPostCommentsResponse) => ({
+      id: comment.id,
+      userId: comment.user_id || null,
+      replyId: comment.reply_id || null,
+      replyContent: comment.reply_content || null,
+      rating: comment.average_vote || null,
+      timestamp: comment.created_at || null
+    }))
+
+    return {
+      comments: rpcCommentsList,
+      error: postCommentsError
+    }
 }
 
 
@@ -225,7 +347,7 @@ export async function readPost(
 //Update functions types
 ///////////////////////////////////////
 
-// Define the overall response structure of write post
+// Define the overall response structure of post/comment updates
 type UpdateReturn = {
   error: PostgrestError | null // Indicates whether there was an error
 }
@@ -236,7 +358,6 @@ type UpdateReturn = {
 ///////////////////////////////////////
 
 // Function to write a single post
-// returns post contents + comments + votes for both
 export async function writePost(
   supabase: SupabaseClient,
   userId: string,
@@ -264,13 +385,12 @@ export async function writePost(
 ///////////////////////////////////////
 
 // Function to write a single post
-// returns post contents + comments + votes for both
 export async function writeCommentForPost(
   supabase: SupabaseClient,
   postId: string,
   userId: string,
   replyId: string | null, //comment being replied to
-  postContent: string
+  replyContent: string
 ): Promise<UpdateReturn> {
     const {error: writeError} = await supabase
     .from('forum.comments')
@@ -279,10 +399,87 @@ export async function writeCommentForPost(
         post_id: postId,
         user_id: userId,
         reply_id: replyId,
-        post_content: postContent
+        reply_content: replyContent
       }
     ])
 
     return {error: writeError}
 }
 
+///////////////////////////////////////////
+//Soft delete a post function
+///////////////////////////////////////////
+
+// Function to update comment to have blank message
+export async function softDeletePost(
+  supabase: SupabaseClient,
+  id: string
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.posts')
+    .update([
+      {
+        post_content: null
+      }
+    ])
+    .eq('id', id)
+
+    return {error: writeError}
+}
+
+///////////////////////////////////////////
+//Soft delete a comment on a post function
+///////////////////////////////////////////
+
+// Function to update comment to have blank message
+export async function softDeleteComment(
+  supabase: SupabaseClient,
+  id: string
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.comments')
+    .update([
+      {
+        reply_content: null
+      }
+    ])
+    .eq('id', id)
+
+    return {error: writeError}
+}
+
+
+///////////////////////////////////////////
+//Hard delete a post function
+///////////////////////////////////////////
+
+// Function to completely remove post entry
+export async function hardDeletePost(
+  supabase: SupabaseClient,
+  id: string
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.posts')
+    .delete()
+    .eq('id', id)
+
+    return {error: writeError}
+}
+
+
+///////////////////////////////////////////
+//Hard delete a comment function
+///////////////////////////////////////////
+
+// Function to completely remove comment entry
+export async function hardDeleteComment(
+  supabase: SupabaseClient,
+  id: string
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.comments')
+    .delete()
+    .eq('id', id)
+
+    return {error: writeError}
+}

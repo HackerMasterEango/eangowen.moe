@@ -208,7 +208,7 @@ type ReadPostReturn = {
 }
 
 ///////////////////////////////////////
-//Read a single post comments function
+//List comments by user function
 ///////////////////////////////////////
 
 // Function to read a user's comments
@@ -419,6 +419,7 @@ export async function softDeletePost(
     .from('forum.posts')
     .update([
       {
+        post_title: null,
         post_content: null
       }
     ])

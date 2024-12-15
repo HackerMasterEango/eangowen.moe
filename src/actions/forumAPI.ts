@@ -1,5 +1,5 @@
 'use server'
-import { SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestError, SupabaseClient } from '@supabase/supabase-js'
 
 
 ///////////////////////////////////////
@@ -25,7 +25,7 @@ type ListPostsElement = {
 // Define the overall response structure of list of posts
 type ListPostsReturn = {
   posts: ListPostsElement[] | null // Array of posts or null if there's an error
-  error: boolean // Indicates whether there was an error
+  error: PostgrestError | null // Indicates whether there was an error
 }
 
 
@@ -40,8 +40,8 @@ export async function listPosts(
   pageNumber: number = 1, //Default to page 1
   pageSize: number = 20 //Default to 20 entries per request
 ): Promise<ListPostsReturn> {
-  // Query with rpc function
-  const {data, error} = await supabase
+    // Query with rpc function
+    const {data, error} = await supabase
     .rpc('list_forum_posts_with_aggregate_votes', {
       page_number: pageNumber,
       page_size: pageSize
@@ -50,7 +50,7 @@ export async function listPosts(
     if (error || !data) {
       return {
         posts: null,
-        error: true,
+        error: error
       }
     }
 
@@ -64,7 +64,7 @@ export async function listPosts(
 
     return {
       posts: rpcPostsList,
-      error: false,
+      error: error
     }
 }
 
@@ -103,7 +103,7 @@ type ReadPostCommentsElement = {
   timestamp: string | null
 }
 
-// Define the structure of the RPC response for posts list
+// Define the structure of the RPC response for post read
 type ReadPostElement = {
   id: string
   userId: string | null
@@ -114,33 +114,45 @@ type ReadPostElement = {
   comments: ReadPostCommentsElement[] | null
 }
 
+// Define the overall response structure of read comments from post
+type ReadPostCommentsReturn = {
+  comments: ReadPostCommentsElement[] | null // A single post or null if there's an error
+  error: PostgrestError | null // Indicates whether there was an error
+}
+
 // Define the overall response structure of read post
 type ReadPostReturn = {
   post: ReadPostElement | null // A single post or null if there's an error
-  error: boolean // Indicates whether there was an error
+  postError: PostgrestError | null // Indicates whether there was an error from post request
+  commentError: PostgrestError | null // Indicates whether there was an error from comments request
 }
 
 
 ///////////////////////////////////////
-//Read a single post function
+//Read a single post comments function
 ///////////////////////////////////////
 
-// Function to read a post by id
-// returns post contents + comments + votes for both
-export async function readPost(
+// Function to read a post's comments by id
+// returns comments + votes for both
+// used for reading new comment pages on a post
+export async function readPostComments(
   supabase: SupabaseClient,
-  postId: string //uuid of post
-): Promise<ReadPostReturn> {
-  // Query comments with rpc function. Needs to loop until reply_id is null or limit reached
-  const {data: postComments, error: postCommentsError} = await supabase
+  postId: string, //uuid of post
+  commentPageNumber: number = 1, //Page number of comments displayed
+  commentPageSize: number = 20 //Page size of comments displayed
+): Promise<ReadPostCommentsReturn> {
+    // Query comments with rpc function
+    const {data: postComments, error: postCommentsError} = await supabase
     .rpc('read_forum_post_comments_with_aggregate_votes', {
-      post_id: postId
+      post_id: postId,
+      pageNumber: commentPageNumber, //Default to page 1
+      pageSize: commentPageSize //Default to 20 entries per request
     })
 
     if (postCommentsError || !postComments) {
       return {
-        post: null,
-        error: true,
+        comments: null,
+        error: postCommentsError
       }
     }
 
@@ -154,6 +166,27 @@ export async function readPost(
       timestamp: comment.created_at || null
     }))
 
+    return {
+      comments: rpcCommentsList,
+      error: postCommentsError
+    }
+}
+
+///////////////////////////////////////
+//Read a single post function
+///////////////////////////////////////
+
+// Function to read a post by id
+// returns post contents + comments + votes for both
+export async function readPost(
+  supabase: SupabaseClient,
+  postId: string, //uuid of post
+  commentPageNumber: number = 1, //Page number of comments displayed (most likely always 1)
+  commentPageSize: number = 20 //Page size of comments displayed
+): Promise<ReadPostReturn> {
+    // Query comments with async comments function
+    const readPostCommentsResults = await readPostComments(supabase, postId, commentPageNumber, commentPageSize)
+
     //Query post with rpc function
     const {data: postData, error: postDataError} = await supabase
     .rpc('read_forum_post_with_aggregate_votes', {
@@ -163,22 +196,93 @@ export async function readPost(
     if (postDataError || !postData) {
       return {
         post: null,
-        error: true,
+        postError: postDataError,
+        commentError: readPostCommentsResults.error
       }
     }
 
-    const rpcPost: ReadPostElement = {
+    const commentsList = readPostCommentsResults.error ? null : readPostCommentsResults.comments
+
+    const rpcReadPost: ReadPostElement = {
       id: postData.id,
       userId: postData.user_id,
       postTitle: postData.post_title,
       postContent: postData.post_content,
       rating: postData.average_vote,
       timestamp: postData.created_at,
-      comments: rpcCommentsList
+      comments: commentsList
     }
 
     return {
-      post: rpcPost,
-      error: false
+      post: rpcReadPost,
+      postError: postDataError,
+      commentError: readPostCommentsResults.error
     }
 }
+
+
+///////////////////////////////////////
+//Update functions types
+///////////////////////////////////////
+
+// Define the overall response structure of write post
+type UpdateReturn = {
+  error: PostgrestError | null // Indicates whether there was an error
+}
+
+
+///////////////////////////////////////
+//Write a post function
+///////////////////////////////////////
+
+// Function to write a single post
+// returns post contents + comments + votes for both
+export async function writePost(
+  supabase: SupabaseClient,
+  userId: string,
+  postTitle: string,
+  postContent: string,
+  topicId: string | null
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.posts')
+    .insert([
+      {
+        user_id: userId,
+        post_title: postTitle,
+        post_content: postContent,
+        topic_id: topicId
+      }
+    ])
+
+    return {error: writeError}
+}
+
+
+///////////////////////////////////////
+//Write a comment on a post function
+///////////////////////////////////////
+
+// Function to write a single post
+// returns post contents + comments + votes for both
+export async function writeCommentForPost(
+  supabase: SupabaseClient,
+  postId: string,
+  userId: string,
+  replyId: string | null, //comment being replied to
+  postContent: string
+): Promise<UpdateReturn> {
+    const {error: writeError} = await supabase
+    .from('forum.comments')
+    .insert([
+      {
+        post_id: postId,
+        user_id: userId,
+        reply_id: replyId,
+        post_content: postContent
+      }
+    ])
+
+    return {error: writeError}
+}
+
